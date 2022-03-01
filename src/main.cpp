@@ -7,6 +7,13 @@
 
 #include "scanner.hpp"
 #include "parser.hpp"
+#include "operations.hpp"
+
+void push_string_to_queue(std::string str, std::queue<char>& queue)
+{
+    for(const auto& c: str)
+	queue.push(c);
+}
 
 int main(int argc, char** argv)
 {
@@ -21,11 +28,11 @@ int main(int argc, char** argv)
 	return 2;
     }
 
-    std::queue<std::string> input_queue;
-    for(std::string in_str; std::getline(in, in_str); input_queue.push(in_str));
+    std::queue<char> input_queue;
+    for(std::string in_str; std::getline(in, in_str); push_string_to_queue(in_str, input_queue));
     in.close();
 
-    std::queue</* ??? */std::string> middle_queue;
+    std::queue<operations> middle_queue;
     scanner scan(input_queue, middle_queue);
     try {
 	scan.run();

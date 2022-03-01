@@ -1,18 +1,20 @@
 #pragma once
 
-#include <string>
 #include <queue>
+
+#include "operations.hpp"
 
 class scanner
 {
     private:
-	using queue = std::queue<std::string>;
+	using iqueue = std::queue<char>;
+	using oqueue = std::queue<operations>;
 
-	queue& input_queue;
-	queue& output_queue;
+	iqueue& input_queue;
+	oqueue& output_queue;
 
     public:
-	scanner(queue& input_queue, queue& output_queue) :
+	scanner(iqueue& input_queue, oqueue& output_queue) :
 	    input_queue{input_queue}, output_queue{output_queue} {}
 
 	void run()
