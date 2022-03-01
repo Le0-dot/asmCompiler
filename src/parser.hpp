@@ -9,7 +9,7 @@ template<typename bits>
 class parser
 {
     private:
-	using iqueue = std::queue<word>;
+	using iqueue = std::queue<word*>;
 	using oqueue = std::queue<bits>;
 
 	iqueue& input_queue;
