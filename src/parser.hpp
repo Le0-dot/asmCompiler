@@ -3,13 +3,13 @@
 #include <string>
 #include <queue>
 
-#include "operations.hpp"
+#include "word/words.hpp"
 
 template<typename bits>
 class parser
 {
     private:
-	using iqueue = std::queue<operations>;
+	using iqueue = std::queue<word>;
 	using oqueue = std::queue<bits>;
 
 	iqueue& input_queue;

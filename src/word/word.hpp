@@ -2,6 +2,13 @@
 
 #include <string>
 
+#include "operations.hpp"
+#include "registers.hpp"
+
+enum class words {
+    operations, registers, numbers
+};
+
 class word 
 {
     public:
@@ -13,5 +20,5 @@ class word
 	word& operator=(word&) = delete;
 	word& operator=(word&&) = delete;
 
-	virtual std::string_view get() = 0;
+	virtual words get() = 0;
 };

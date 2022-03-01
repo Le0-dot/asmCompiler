@@ -7,7 +7,6 @@
 
 #include "scanner.hpp"
 #include "parser.hpp"
-#include "operations.hpp"
 
 void push_string_to_queue(std::string str, std::queue<char>& queue)
 {
@@ -32,7 +31,7 @@ int main(int argc, char** argv)
     for(std::string in_str; std::getline(in, in_str); push_string_to_queue(in_str, input_queue));
     in.close();
 
-    std::queue<operations> middle_queue;
+    std::queue<word> middle_queue;
     scanner scan(input_queue, middle_queue);
     try {
 	scan.run();
