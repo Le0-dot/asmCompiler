@@ -4,6 +4,7 @@
 #include <queue>
 #include <stdexcept>
 #include <cstdint>
+#include <memory>
 
 #include "scanner.hpp"
 #include "parser.hpp"
@@ -23,11 +24,11 @@ int main(int argc, char** argv)
     }
 
     std::queue<char> input_queue;
-    for(std::string in_str; std::getline(in, in_str); push_string_to_queue(in_str, input_queue));
+    for(char c; in; in >> std::noskipws >> c, input_queue.push(c));
     in.close();
 
-    std::queue<word*> middle_queue;
-    scanner scan(input_queue, middle_queue);
+    std::queue<std::shared_ptr<word>> middle_queue;
+    scanner<uint16_t> scan(input_queue, middle_queue);
     try {
 	scan.run();
     } catch(std::runtime_error& e) {
