@@ -2,6 +2,7 @@
 
 #include <string>
 #include <queue>
+#include <memory>
 
 #include "word/words.hpp"
 
@@ -9,7 +10,7 @@ template<typename bits>
 class parser
 {
     private:
-	using iqueue = std::queue<word*>;
+	using iqueue = std::queue<std::shared_ptr<word>>;
 	using oqueue = std::queue<bits>;
 
 	iqueue& input_queue;
