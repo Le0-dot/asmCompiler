@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <iostream>
+
 #include "word.hpp"
 #include "operation_word.hpp"
 #include "register_word.hpp"
