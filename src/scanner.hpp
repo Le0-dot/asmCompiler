@@ -1,6 +1,5 @@
 #pragma once
 
-#include <queue>
 #include <string>
 #include <map>
 #include <functional>
@@ -10,13 +9,14 @@
 
 #include "word/words.hpp"
 #include "utils.hpp"
+#include "logging_queue.hpp"
 
 template<typename num>
 class scanner
 {
     private:
-	using iqueue = std::queue<char>;
-	using oqueue = std::queue<std::shared_ptr<word>>;
+	using iqueue = logging_queue<char>;
+	using oqueue = logging_queue<std::shared_ptr<word>>;
 
 	iqueue& input_queue;
 	oqueue& output_queue;
@@ -50,7 +50,7 @@ class scanner
 		if(current == ' ')
 		    continue;
 		else if(current == '\n') {
-		    output_queue.push(std::make_shared<endline_word>());
+		    output_queue.push(std::make_shared<endline_word>(), "std::make_shared<endline_word>()");
 		    std::cerr << "output_queue.push(std::make_shared<endline_word>())" << std::endl;
 		} else if(std::isdigit(current))
 		    prev = num_char(prev, current);
@@ -160,6 +160,11 @@ class scanner
 	    }
 	    if(prev == "js" && std::isspace(input_queue.front())) {
 		output_queue.push(std::make_shared<operation_word>(operations::jsr));
+		std::cerr << "output_queue.push(std::make_shared<operation_word>(operations::" << output_queue.back() << "))" << std::endl;
+		return "";
+	    }
+	    if(prev == "jsr" && std::isspace(input_queue.front())) {
+		output_queue.push(std::make_shared<operation_word>(operations::jsrr));
 		std::cerr << "output_queue.push(std::make_shared<operation_word>(operations::" << output_queue.back() << "))" << std::endl;
 		return "";
 	    }

@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <queue>
 #include <stdexcept>
 #include <cstdint>
 #include <memory>
@@ -9,6 +8,7 @@
 #include "scanner.hpp"
 #include "parser.hpp"
 #include "utils.hpp"
+#include "logging_queue.hpp"
 
 int main(int argc, char** argv)
 {
@@ -23,11 +23,11 @@ int main(int argc, char** argv)
 	return 2;
     }
 
-    std::queue<char> input_queue;
+    logging_queue<char> input_queue("input_queue");
     for(char c; in; in >> std::noskipws >> c, input_queue.push(c));
     in.close();
 
-    std::queue<std::shared_ptr<word>> middle_queue;
+    logging_queue<std::shared_ptr<word>> middle_queue("middle_queue");
     scanner<uint16_t> scan(input_queue, middle_queue);
     try {
 	scan.run();
@@ -36,7 +36,7 @@ int main(int argc, char** argv)
 	return 3;
     }
 
-    std::queue<uint16_t> output_queue;
+    logging_queue<uint16_t> output_queue("output_queue");
     parser<uint16_t> pars(middle_queue, output_queue);
     try {
 	pars.run();

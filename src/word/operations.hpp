@@ -6,7 +6,7 @@
 enum class operations {
     add, and_op, ld, ldi, ldr, lea,
     not_op, st, sti, str, jmp, jsr,
-    br, trap, halt
+    jsrr, br, trap, halt
 };
 
 std::string otos(operations op)
@@ -24,6 +24,7 @@ std::string otos(operations op)
 	{ operations::str, "str"},
 	{ operations::jmp, "jmp"},
 	{ operations::jsr, "jsr"},
+	{ operations::jsrr, "jsrr"},
 	{ operations::br, "br"},
 	{ operations::trap, "trap"},
 	{ operations::halt, "halt"}
