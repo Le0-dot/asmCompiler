@@ -24,7 +24,8 @@ int main(int argc, char** argv)
     }
 
     logging_queue<char> input_queue("input_queue");
-    for(char c; in; in >> std::noskipws >> c, input_queue.push(c));
+    for(char c; in; in >> std::noskipws >> c, input_queue.push(c, 
+		"'" + (c == '\n' ? "\\n" : std::string(1, c)) + "'"));
     in.close();
 
     logging_queue<std::shared_ptr<word>> middle_queue("middle_queue");

@@ -49,10 +49,9 @@ class scanner
 		char current = pop_queue(input_queue);
 		if(current == ' ')
 		    continue;
-		else if(current == '\n') {
+		else if(current == '\n')
 		    output_queue.push(std::make_shared<endline_word>(), "std::make_shared<endline_word>()");
-		    std::cerr << "output_queue.push(std::make_shared<endline_word>())" << std::endl;
-		} else if(std::isdigit(current))
+		else if(std::isdigit(current))
 		    prev = num_char(prev, current);
 		else
 		    prev = funcs[current](prev);
@@ -69,8 +68,8 @@ class scanner
 	    if(prev == "tr" && input_queue.front() != 'p')
 		throw std::runtime_error(prev + 'a');
 	    if(prev == "le" && std::isspace(input_queue.front())) {
-		output_queue.push(std::make_shared<operation_word>(operations::lea));
-		std::cerr << "output_queue.push(std::make_shared<operation_word>(operations::" << output_queue.back() << "))" << std::endl;
+		output_queue.push(std::make_shared<operation_word>(operations::lea),
+			"std::make_shared<operation_word>(operations::" + otos(operations::lea) + ")");
 		return "";
 	    }
 	    if(prev == "h" && input_queue.front() != 'l')
@@ -85,18 +84,18 @@ class scanner
 	    if(prev == "a" && input_queue.front() != 'd')
 		throw std::runtime_error(prev + 'd');
 	    if(prev == "ad" && std::isspace(input_queue.front())) {
-		output_queue.push(std::make_shared<operation_word>(operations::add));
-		std::cerr << "output_queue.push(std::make_shared<operation_word>(operations::" << output_queue.back() << "))" << std::endl;
+		output_queue.push(std::make_shared<operation_word>(operations::add),
+			"std::make_shared<operation_word>(operations::" + otos(operations::add) + ")");
 		return "";
 	    }
 	    if(prev == "an" && std::isspace(input_queue.front())) {
-		output_queue.push(std::make_shared<operation_word>(operations::and_op));
-		std::cerr << "output_queue.push(std::make_shared<operation_word>(operations::" << output_queue.back() << "))" << std::endl;
+		output_queue.push(std::make_shared<operation_word>(operations::and_op),
+			"std::make_shared<operation_word>(operations::" + otos(operations::and_op) + ")");
 		return "";
 	    }
 	    if(prev == "l" && std::isspace(input_queue.front())) {
-		output_queue.push(std::make_shared<operation_word>(operations::ld));
-		std::cerr << "output_queue.push(std::make_shared<operation_word>(operations::" << output_queue.back() << "))" << std::endl;
+		output_queue.push(std::make_shared<operation_word>(operations::ld),
+			"std::make_shared<operation_word>(operations::" + otos(operations::ld) + ")");
 		return "";
 	    }
 	    if(prev == "l" && (input_queue.front() != 'i' && input_queue.front() != 'r'))
@@ -132,13 +131,13 @@ class scanner
 	    std::cerr << "scanner::i_char(\"" << prev << "\") [input_queue.front() = '" 
 		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "ld" && std::isspace(input_queue.front())) {
-		output_queue.push(std::make_shared<operation_word>(operations::ldi));
-		std::cerr << "output_queue.push(std::make_shared<operation_word>(operations::" << output_queue.back() << "))" << std::endl;
+		output_queue.push(std::make_shared<operation_word>(operations::ldi),
+			"std::make_shared<operation_word>(operations::" + otos(operations::ldi) + ")");
 		return "";
 	    }
 	    if(prev == "st" && std::isspace(input_queue.front())) {
-		output_queue.push(std::make_shared<operation_word>(operations::sti));
-		std::cerr << "output_queue.push(std::make_shared<operation_word>(operations::" << output_queue.back() << "))" << std::endl;
+		output_queue.push(std::make_shared<operation_word>(operations::sti),
+			"std::make_shared<operation_word>(operations::" + otos(operations::sti) + ")");
 		return "";
 	    }
 	    return prev + 'i';
@@ -149,28 +148,28 @@ class scanner
 	    std::cerr << "scanner::r_char(\"" << prev << "\") [input_queue.front() = '" 
 		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "ld" && std::isspace(input_queue.front())) {
-		output_queue.push(std::make_shared<operation_word>(operations::ldr));
-		std::cerr << "output_queue.push(std::make_shared<operation_word>(operations::" << output_queue.back() << "))" << std::endl;
+		output_queue.push(std::make_shared<operation_word>(operations::ldr),
+			"std::make_shared<operation_word>(operations::" + otos(operations::ldr) + ")");
 		return "";
 	    }
 	    if(prev == "st" && std::isspace(input_queue.front())) {
-		output_queue.push(std::make_shared<operation_word>(operations::str));
-		std::cerr << "output_queue.push(std::make_shared<operation_word>(operations::" << output_queue.back() << "))" << std::endl;
+		output_queue.push(std::make_shared<operation_word>(operations::str),
+			"std::make_shared<operation_word>(operations::" + otos(operations::str) + ")");
 		return "";
 	    }
 	    if(prev == "js" && std::isspace(input_queue.front())) {
-		output_queue.push(std::make_shared<operation_word>(operations::jsr));
-		std::cerr << "output_queue.push(std::make_shared<operation_word>(operations::" << output_queue.back() << "))" << std::endl;
+		output_queue.push(std::make_shared<operation_word>(operations::jsr),
+			"std::make_shared<operation_word>(operations::" + otos(operations::jsr) + ")");
 		return "";
 	    }
 	    if(prev == "jsr" && std::isspace(input_queue.front())) {
-		output_queue.push(std::make_shared<operation_word>(operations::jsrr));
-		std::cerr << "output_queue.push(std::make_shared<operation_word>(operations::" << output_queue.back() << "))" << std::endl;
+		output_queue.push(std::make_shared<operation_word>(operations::jsrr),
+			"std::make_shared<operation_word>(operations::" + otos(operations::jsrr) + ")");
 		return "";
 	    }
 	    if(prev == "b" && std::isspace(input_queue.front())) {
-		output_queue.push(std::make_shared<operation_word>(operations::br));
-		std::cerr << "output_queue.push(std::make_shared<operation_word>(operations::" << output_queue.back() << "))" << std::endl;
+		output_queue.push(std::make_shared<operation_word>(operations::br),
+			"std::make_shared<operation_word>(operations::" + otos(operations::br) + ")");
 		return "";
 	    }
 	    if(prev == "t" && input_queue.front() != 'a')
@@ -201,18 +200,18 @@ class scanner
 	    std::cerr << "scanner::t_char(\"" << prev << "\") [input_queue.front() = '" 
 		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "no" && std::isspace(input_queue.front())) {
-		output_queue.push(std::make_shared<operation_word>(operations::not_op));
-		std::cerr << "output_queue.push(std::make_shared<operation_word>(operations::" << output_queue.back() << "))" << std::endl;
+		output_queue.push(std::make_shared<operation_word>(operations::not_op),
+			"std::make_shared<operation_word>(operations::" + otos(operations::not_op) + ")");
 		return "";
 	    }
 	    if(prev == "s" && std::isspace(input_queue.front())) {
-		output_queue.push(std::make_shared<operation_word>(operations::st));
-		std::cerr << "output_queue.push(std::make_shared<operation_word>(operations::" << output_queue.back() << "))" << std::endl;
+		output_queue.push(std::make_shared<operation_word>(operations::st),
+			"std::make_shared<operation_word>(operations::" + otos(operations::st) + ")");
 		return "";
 	    }
 	    if(prev == "hal" && std::isspace(input_queue.front())) {
-		output_queue.push(std::make_shared<operation_word>(operations::halt));
-		std::cerr << "output_queue.push(std::make_shared<operation_word>(operations::" << output_queue.back() << "))" << std::endl;
+		output_queue.push(std::make_shared<operation_word>(operations::halt),
+			"std::make_shared<operation_word>(operations::" + otos(operations::halt) + ")");
 		return "";
 	    }
 	    if(prev == "s" && input_queue.front() != 'i' && 
@@ -257,13 +256,13 @@ class scanner
 	    std::cerr << "scanner::p_char(\"" << prev << "\") [input_queue.front() = '" 
 		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "jm" && std::isspace(input_queue.front())) {
-		output_queue.push(std::make_shared<operation_word>(operations::jmp));
-		std::cerr << "output_queue.push(std::make_shared<operation_word>(operations::" << output_queue.back() << "))" << std::endl;
+		output_queue.push(std::make_shared<operation_word>(operations::jmp),
+			"std::make_shared<operation_word>(operations::" + otos(operations::jmp) + ")");
 		return "";
 	    }
 	    if(prev == "tra" && std::isspace(input_queue.front())) {
-		output_queue.push(std::make_shared<operation_word>(operations::trap));
-		std::cerr << "output_queue.push(std::make_shared<operation_word>(operations::" << output_queue.back() << "))" << std::endl;
+		output_queue.push(std::make_shared<operation_word>(operations::trap),
+			"std::make_shared<operation_word>(operations::" + otos(operations::trap) + ")");
 		return "";
 	    }
 	    return prev + 'p';
@@ -292,13 +291,13 @@ class scanner
 	    std::cerr << "scanner::num_char(\"" << prev << "\", '" << current 
 		<< "') [input_queue.front() = '" << (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "r" && std::isspace(input_queue.front()) && current != '8' && current != '9') {
-		output_queue.push(std::make_shared<register_word>(ntor(current)));
-		std::cerr << "output_queue.push(std::make_shared<register_word>(registers::" << output_queue.back() << "))" << std::endl;
+		output_queue.push(std::make_shared<register_word>(ntor(current)),
+			std::string("std::make_shared<register_word>(registers::r") + current + ")");
 		return "";
 	    }
 	    if((prev == "" || isnumber(prev)) && std::isspace(input_queue.front())) {
-		output_queue.push(std::make_shared<number_word<num>>(std::stoul(prev + current)));
-		std::cerr << "output_queue.push(std::make_shared<number_word<" << ttos<num>::v << ">>(" << output_queue.back() << "))" << std::endl;
+		output_queue.push(std::make_shared<number_word<num>>(std::stoul(prev + current)),
+			std::string("std::make_shared<number_word<") + ttos<num>::v + ">>(" + prev + current + ")");
 		return "";
 	    }
 	    if((prev == "" || isnumber(prev)) && !std::isdigit(input_queue.front()) && !std::isspace(input_queue.front()))

@@ -8,10 +8,10 @@ template<typename T>
 class logging_queue : public std::queue<T>
 {
     private:
-	const std::string& name;
+	const std::string name;
 
     public:
-	logging_queue(const std::string& name) :
+	logging_queue(const std::string name) :
 	    name{name} {}
 
 	void push(const T& val, const std::string& log)
