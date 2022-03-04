@@ -3,11 +3,12 @@
 #include <variant>
 
 #include "../../word/operations.hpp"
+#include "../op.hpp"
 
 #include "lexeme/reg.hpp"
 #include "lexeme/nums.hpp"
 
-class and_op
+class and_op : public op
 {
     private:
 	reg d, s1;
@@ -28,7 +29,7 @@ class and_op
 		throw std::runtime_error("Wrong operation in add_op");
 	}
 
-	uint16_t get_binary()
+	virtual uint16_t get_binary()
 	{
 	    try {
 		return 0x1 << 12 + d.get_binary() << 9 + s1.get_binary() << 6 + std::get<reg>(s2).get_binary();

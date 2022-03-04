@@ -1,14 +1,15 @@
 #pragma once
 
 #include "../../word/operations.hpp"
+#include "../op.hpp"
 
 #include "lexeme/reg.hpp"
 #include "lexeme/nums.hpp"
 
-class lea_op
+class lea_op : public op
 {
     private:
-	reg d
+	reg d;
 	num9 s;
 
     public:
@@ -19,7 +20,7 @@ class lea_op
 		throw std::runtime_error("Wrong operation in lea_op");
 	}
 
-	uint16_t get_binary()
+	virtual uint16_t get_binary()
 	{
 	    return 0xE << 12 + d.get_binary() << 9 + s.get_binary();
 	}

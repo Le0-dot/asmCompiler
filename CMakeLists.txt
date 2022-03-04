@@ -11,7 +11,7 @@ set(SRC src/main.cpp src/scanner.hpp src/parser.hpp src/utils.hpp src/logging_qu
 set(WORD src/word/word.hpp src/word/operation_word.hpp src/word/register_word.hpp
     src/word/number_word.hpp src/word/operations.hpp src/word/registers.hpp
     src/word/traps.hpp src/word/trap_word.hpp src/word/endline_word.hpp src/word/words.hpp)
-set(TOKEN src/token/stmt.hpp src/token/tokens.hpp)
+set(TOKEN src/token/stmt.hpp src/token/tokens.hpp src/token/endline.hpp src/token/op.hpp)
 set(OPS src/token/ops/add_op.hpp
 	src/token/ops/and_op.hpp
 	src/token/ops/br_op.hpp

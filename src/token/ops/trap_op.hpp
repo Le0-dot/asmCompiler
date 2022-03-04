@@ -21,4 +21,4 @@ class trap_op
 	{
 	    return 0xF << 12 + trp.get_binary() & 0b1111111; 
 	}
-}
+};

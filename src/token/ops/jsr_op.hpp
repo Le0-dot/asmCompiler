@@ -3,11 +3,12 @@
 #include <variant>
 
 #include "../../word/operations.hpp"
+#include "../op.hpp"
 
 #include "lexeme/reg.hpp"
 #include "lexeme/nums.hpp"
 
-class jsr_op
+class jsr_op : public op
 {
     private:
 	std::variant<num3, num11> s;
@@ -27,7 +28,7 @@ class jsr_op
 		throw std::runtime_error("Wrong operation in jsr_op");
 	}
 
-	uint16_t get_binary()
+	virtual uint16_t get_binary()
 	{
 	    try {
 		return 0x4 << 12 + 1 << 11 + std::get<num11>(s).get_binary();

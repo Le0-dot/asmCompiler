@@ -1,11 +1,12 @@
 #pragma once
 
 #include "../../word/operations.hpp"
+#include "../op.hpp"
 
 #include "lexeme/reg.hpp"
 #include "lexeme/nums.hpp"
 
-class br_op
+class br_op : public op
 {
     private:
 	num3 f;
@@ -16,10 +17,10 @@ class br_op
 	    f{f}, o{o}
 	{
 	    if(op != operations::br)
-		throw brd::runtime_error("Wrong operation in br_op");
+		throw std::runtime_error("Wrong operation in br_op");
 	}
 
-	uint16_t get_binary()
+	virtual uint16_t get_binary()
 	{
 	    return 0x0 << 12 + f.get_binary() << 9 + o.get_binary();
 	}

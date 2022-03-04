@@ -9,7 +9,7 @@ class trapvect
 {
     private:
 	const traps trap;
-	static map<traps, uint16_t> table;
+	static std::map<traps, uint16_t> table;
 
     public:
 	trapvect(traps trap) : trap{trap} {}
@@ -17,7 +17,7 @@ class trapvect
 	uint16_t get_binary() { return table[trap]; }
 };
 
-map<traps, uint16_t> trapvect::table = {
+std::map<traps, uint16_t> trapvect::table = {
     { traps::trp_get_c, 0x20 },
     { traps::trp_out, 0x21 },
     { traps::trp_put_s, 0x22 },

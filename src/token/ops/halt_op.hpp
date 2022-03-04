@@ -3,8 +3,9 @@
 #include <stdexcept>
 
 #include "../../word/operations.hpp"
+#include "../op.hpp"
 
-class halt_op
+class halt_op : public op
 {
     public:
 	halt_op(operations op)
@@ -13,8 +14,8 @@ class halt_op
 		throw std::runtime_error("Wrong operation in halt_op");
 	}
 
-	uint16_t get_binary()
+	virtual uint16_t get_binary()
 	{
-	    return 0xF << 12 + 0x25;
+	    return 0xf025;
 	}
-}
+};

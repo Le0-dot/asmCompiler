@@ -1,43 +1,26 @@
 #pragma once
 
-template<typename bits>
+#include <bitset>
+#include <cstdint>
+
+template<typename T, size_t N>
 class numN
 {
-    protected:
-	bits val;
+    private:
+	T val;
 
     public:
-	numN(bits val);
-	virtual ~numN() = 0;
+	numN(T val)
+	{
+	    std::bitset<N> mask;
+	    mask = ~mask;
+	    this->val = val & mask.to_ulong();
+	}
+	T get_binary() { return val; } 
 };
 
-template<typename bits>
-class num3 : private numN<bits>
-{
-    public:
-	num3(bits val) : val{val & 0b111} {}
-
-template<typename bits>
-class num5 : private numN<bits>
-{
-    public:
-	num5(bits val) : val{val & 0b11111} {}
-
-template<typename bits>
-class num6 : private numN<bits>
-{
-    public:
-	num6(bits val) : val{val & 0b111111} {}
-
-template<typename bits>
-class num9 : private numN<bits>
-{
-    public:
-	num9(bits val) : val{val & 0b111111111} {}
-
-template<typename bits>
-class num11 : private numN<bits>
-{
-    public:
-	num11(bits val) : val{val & 0b11111111111} {}
-};
+using num3 = numN<uint16_t, 3>;
+using num5 = numN<uint16_t, 5>;
+using num6 = numN<uint16_t, 6>;
+using num9 = numN<uint16_t, 9>;
+using num11 = numN<uint16_t, 11>;

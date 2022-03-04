@@ -66,6 +66,7 @@
 #include <memory>
 
 #include "word/words.hpp"
+#include "token/tokens.hpp"
 #include "logging_queue.hpp"
 
 template<typename bits>

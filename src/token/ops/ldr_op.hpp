@@ -1,14 +1,15 @@
 #pragma once
 
 #include "../../word/operations.hpp"
+#include "../op.hpp"
 
 #include "lexeme/reg.hpp"
 #include "lexeme/nums.hpp"
 
-class ldr_op
+class ldr_op : public op
 {
     private:
-	reg d
+	reg d;
 	num3 b;
 	num6 o;
 
@@ -20,7 +21,7 @@ class ldr_op
 		throw std::runtime_error("Wrong operation in ldr_op");
 	}
 
-	uint16_t get_binary()
+	virtual uint16_t get_binary()
 	{
 	    return 0x6 << 12 + d.get_binary() << 9 + d.get_binary() << 6 + o.get_binary();
 	}

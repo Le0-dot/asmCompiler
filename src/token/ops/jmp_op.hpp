@@ -1,11 +1,12 @@
 #pragma once
 
 #include "../../word/operations.hpp"
+#include "../op.hpp"
 
 #include "lexeme/reg.hpp"
 #include "lexeme/nums.hpp"
 
-class jmp_op
+class jmp_op : public op
 {
     private:
 	num3 b;
@@ -18,7 +19,7 @@ class jmp_op
 		throw std::runtime_error("Wrong operation in jmp_op");
 	}
 
-	uint16_t get_binary()
+	virtual uint16_t get_binary()
 	{
 	    return 0xC << 12 + b.get_binary() << 6;
 	}
