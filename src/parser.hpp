@@ -51,6 +51,13 @@
 //
 //  halt_op -> halt
 //
+//  trapvect -> trp_get_c   |
+//		trp_out     |
+//		trp_put_s   |
+//		trp_in      |
+//		trp_in_u16  |
+//		trp_out_u16
+//
 ///////////////////////////////////////////////////////////////////////
 
 #pragma once
