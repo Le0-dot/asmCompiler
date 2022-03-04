@@ -48,12 +48,15 @@ std::ostream& operator<<(std::ostream& out, std::shared_ptr<word> w)
 	case words::numbers:
 	    out << static_cast<number_word<uint16_t>*>(w.get())->get_num();
 	    break;
+	case words::traps:
+	    out << ttos(static_cast<trap_word*>(w.get())->get_trp());
+	    break;
     }
     return out;
 }
 
 template<typename T>
-struct ttos { static constexpr auto v = ""; };
+struct typetostr { static constexpr auto v = ""; };
 
 template<>
-struct ttos<uint16_t> { static constexpr auto v = "uint16_t"; };
+struct typetostr<uint16_t> { static constexpr auto v = "uint16_t"; };

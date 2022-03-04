@@ -297,7 +297,7 @@ class scanner
 	    }
 	    if((prev == "" || isnumber(prev)) && std::isspace(input_queue.front())) {
 		output_queue.push(std::make_shared<number_word<num>>(std::stoul(prev + current)),
-			std::string("std::make_shared<number_word<") + ttos<num>::v + ">>(" + prev + current + ")");
+			std::string("std::make_shared<number_word<") + typetostr<num>::v + ">>(" + prev + current + ")");
 		return "";
 	    }
 	    if((prev == "" || isnumber(prev)) && !std::isdigit(input_queue.front()) && !std::isspace(input_queue.front()))

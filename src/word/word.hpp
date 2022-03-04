@@ -6,7 +6,7 @@
 #include "registers.hpp"
 
 enum class words {
-    operations, registers, numbers, endline
+    operations, registers, numbers, traps, endline
 };
 
 class word 
