@@ -1,22 +1,22 @@
 #pragma once
 
-#include <queue>
 #include <stdexcept>
 #include <cstring>
 #include <cctype>
 #include <cstdint>
 
 #include "word/words.hpp"
+#include "logging_queue.hpp"
 
 template<typename T>
-T pop_queue(std::queue<T>& queue)
+T pop_queue(logging_queue<T>& queue)
 {
     T val = queue.front();
     queue.pop();
     return val;
 }
 
-void error_handling(const std::runtime_error& e, std::queue<char>& input_queue)
+void error_handling(const std::runtime_error& e, logging_queue<char>& input_queue)
 {
     std::cout << "Syntax error: " << std::endl << e.what();
     char current;

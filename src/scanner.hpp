@@ -18,12 +18,13 @@ class scanner
 	using iqueue = logging_queue<char>;
 	using oqueue = logging_queue<std::shared_ptr<word>>;
 
+	std::string name;
 	iqueue& input_queue;
 	oqueue& output_queue;
 
     public:
-	scanner(iqueue& input_queue, oqueue& output_queue) :
-	    input_queue{input_queue}, output_queue{output_queue} {}
+	scanner(iqueue& input_queue, oqueue& output_queue, std::string name = "scanner") :
+	    name{name}, input_queue{input_queue}, output_queue{output_queue} {}
 
 	void run()
 	{
@@ -42,7 +43,11 @@ class scanner
 		{'m', std::bind(&scanner::m_char, *this, std::placeholders::_1)},
 		{'p', std::bind(&scanner::p_char, *this, std::placeholders::_1)},
 		{'b', std::bind(&scanner::b_char, *this, std::placeholders::_1)},
-		{'h', std::bind(&scanner::h_char, *this, std::placeholders::_1)}
+		{'h', std::bind(&scanner::h_char, *this, std::placeholders::_1)},
+		{'g', std::bind(&scanner::g_char, *this, std::placeholders::_1)},
+		{'c', std::bind(&scanner::c_char, *this, std::placeholders::_1)},
+		{'u', std::bind(&scanner::u_char, *this, std::placeholders::_1)},
+		{'_', std::bind(&scanner::underscore_char, *this, std::placeholders::_1)}
 	    };
 	    std::string prev = "";
 	    while(!input_queue.empty()) {
@@ -61,7 +66,7 @@ class scanner
     private:
 	std::string a_char(const std::string& prev)
 	{
-	    std::cerr << "scanner::a_char(\"" << prev << "\") [input_queue.front() = '" 
+	    std::cerr << name << ".a_char(\"" << prev << "\") [input_queue.front() = '" 
 		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "" && (input_queue.front() != 'd' && input_queue.front() != 'n'))
 		throw std::runtime_error(prev + 'a');
@@ -79,7 +84,7 @@ class scanner
 
 	std::string d_char(const std::string& prev)
 	{
-	    std::cerr << "scanner::d_char(\"" << prev << "\") [input_queue.front() = '"
+	    std::cerr << name << ".d_char(\"" << prev << "\") [input_queue.front() = '"
 		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "a" && input_queue.front() != 'd')
 		throw std::runtime_error(prev + 'd');
@@ -105,18 +110,25 @@ class scanner
 
 	std::string n_char(const std::string& prev)
 	{
-	    std::cerr << "scanner::n_char(\"" << prev << "\") [input_queue.front() = '" 
+	    std::cerr << name << ".n_char(\"" << prev << "\") [input_queue.front() = '" 
 		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "" && input_queue.front() != 'o')
 		throw std::runtime_error(prev + 'n');
 	    if(prev == "a" && input_queue.front() != 'd')
+		throw std::runtime_error(prev + 'n');
+	    if(prev == "trp_i" && std::isspace(input_queue.front())) {
+		output_queue.push(std::make_shared<trap_word>(traps::trp_in),
+			"std::make_shared<trap_word>(traps::" + ttos(traps::trp_in) + ")");
+		return "";
+	    }
+	    if(prev == "trp_i" && input_queue.front() != '_')
 		throw std::runtime_error(prev + 'n');
 	    return prev + 'n';
 	}
 
 	std::string l_char(const std::string& prev)
 	{
-	    std::cerr << "scanner::l_char(\"" << prev << "\") [input_queue.front() = '" 
+	    std::cerr << name << ".l_char(\"" << prev << "\") [input_queue.front() = '" 
 		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "" && (input_queue.front() != 'd' &&
 			      input_queue.front() != 'e'))
@@ -128,7 +140,7 @@ class scanner
 
 	std::string i_char(const std::string& prev)
 	{
-	    std::cerr << "scanner::i_char(\"" << prev << "\") [input_queue.front() = '" 
+	    std::cerr << name << ".i_char(\"" << prev << "\") [input_queue.front() = '" 
 		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "ld" && std::isspace(input_queue.front())) {
 		output_queue.push(std::make_shared<operation_word>(operations::ldi),
@@ -140,12 +152,14 @@ class scanner
 			"std::make_shared<operation_word>(operations::" + otos(operations::sti) + ")");
 		return "";
 	    }
+	    if(prev == "trp_" && input_queue.front() != 'n')
+		throw std::runtime_error(prev + 'i');
 	    return prev + 'i';
 	}
 
 	std::string r_char(const std::string& prev)
 	{
-	    std::cerr << "scanner::r_char(\"" << prev << "\") [input_queue.front() = '" 
+	    std::cerr << name << ".r_char(\"" << prev << "\") [input_queue.front() = '" 
 		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "ld" && std::isspace(input_queue.front())) {
 		output_queue.push(std::make_shared<operation_word>(operations::ldr),
@@ -172,32 +186,36 @@ class scanner
 			"std::make_shared<operation_word>(operations::" + otos(operations::br) + ")");
 		return "";
 	    }
-	    if(prev == "t" && input_queue.front() != 'a')
+	    if(prev == "t" && input_queue.front() != 'a' && input_queue.front() != 'p')
 		throw std::runtime_error(prev + 'r');
 	    return prev + 'r';
 	}
 
 	std::string e_char(const std::string& prev)
 	{
-	    std::cerr << "scanner::e_char(\"" << prev << "\") [input_queue.front() = '" 
+	    std::cerr << name << ".e_char(\"" << prev << "\") [input_queue.front() = '" 
 		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "l" && input_queue.front() != 'a')
+		throw std::runtime_error(prev + 'e');
+	    if(prev == "trp_g" && input_queue.front() != 't')
 		throw std::runtime_error(prev + 'e');
 	    return prev + 'e';
 	}
 
 	std::string o_char(const std::string& prev)
 	{
-	    std::cerr << "scanner::o_char(\"" << prev << "\") [input_queue.front() = '" 
+	    std::cerr << name << ".o_char(\"" << prev << "\") [input_queue.front() = '" 
 		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "n" && input_queue.front() != 't')
+		throw std::runtime_error(prev + 'o');
+	    if(prev == "trp_" && input_queue.front() != 'u')
 		throw std::runtime_error(prev + 'o');
 	    return prev + 'o';
 	}
 
 	std::string t_char(const std::string& prev)
 	{
-	    std::cerr << "scanner::t_char(\"" << prev << "\") [input_queue.front() = '" 
+	    std::cerr << name << ".t_char(\"" << prev << "\") [input_queue.front() = '" 
 		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "no" && std::isspace(input_queue.front())) {
 		output_queue.push(std::make_shared<operation_word>(operations::not_op),
@@ -214,28 +232,42 @@ class scanner
 			"std::make_shared<operation_word>(operations::" + otos(operations::halt) + ")");
 		return "";
 	    }
+	    if(prev == "trp_ou" && std::isspace(input_queue.front())) {
+		output_queue.push(std::make_shared<trap_word>(traps::trp_out),
+			"std::make_shared<trap_word>(traps::" + ttos(traps::trp_out) + ")");
+		return "";
+	    }
+	    if((prev == "trp_ou" || prev == "trp_pu") && input_queue.front() != '_')
+		throw std::runtime_error(prev + 't');
 	    if(prev == "s" && input_queue.front() != 'i' && 
 		    input_queue.front() != 'r' && input_queue.front() != ' ')
 		throw std::runtime_error(prev + 't');
 	    if(prev == "" && input_queue.front() != 'r')
+		throw std::runtime_error(prev + 't');
+	    if(prev == "trp_ge" && input_queue.front() != '_')
 		throw std::runtime_error(prev + 't');
 	    return prev + 't';
 	}
 
 	std::string s_char(const std::string& prev)
 	{
-	    std::cerr << "scanner::s_char(\"" << prev << "\") [input_queue.front() = '" 
+	    std::cerr << name << ".s_char(\"" << prev << "\") [input_queue.front() = '" 
 		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "" && input_queue.front() != 't')
 		throw std::runtime_error(prev + 's');
 	    if(prev == "j" && input_queue.front() != 'r')
 		throw std::runtime_error(prev + 's');
+	    if(prev == "trp_put_" && std::isspace(input_queue.front())) {
+		output_queue.push(std::make_shared<trap_word>(traps::trp_put_s),
+			"std::make_shared<trap_word>(traps::" + ttos(traps::trp_put_s) + ")");
+		return "";
+	    }
 	    return prev + 's';
 	}
 
 	std::string j_char(const std::string& prev)
 	{
-	    std::cerr << "scanner::j_char(\"" << prev << "\") [input_queue.front() = '" 
+	    std::cerr << name << ".j_char(\"" << prev << "\") [input_queue.front() = '" 
 		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "" && input_queue.front() != 'm' && input_queue.front() != 's')
 		throw std::runtime_error(prev + 'j');
@@ -244,7 +276,7 @@ class scanner
 
 	std::string m_char(const std::string& prev)
 	{
-	    std::cerr << "scanner::m_char(\"" << prev << "\") [input_queue.front() = '" 
+	    std::cerr << name << ".m_char(\"" << prev << "\") [input_queue.front() = '" 
 		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "j" && input_queue.front() != 'p')
 		throw std::runtime_error(prev + 'm');
@@ -253,7 +285,7 @@ class scanner
 
 	std::string p_char(const std::string& prev)
 	{
-	    std::cerr << "scanner::p_char(\"" << prev << "\") [input_queue.front() = '" 
+	    std::cerr << name << ".p_char(\"" << prev << "\") [input_queue.front() = '" 
 		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "jm" && std::isspace(input_queue.front())) {
 		output_queue.push(std::make_shared<operation_word>(operations::jmp),
@@ -265,12 +297,16 @@ class scanner
 			"std::make_shared<operation_word>(operations::" + otos(operations::trap) + ")");
 		return "";
 	    }
+	    if(prev == "tr" && input_queue.front() != '_')
+		throw std::runtime_error(prev + 'p');
+	    if(prev == "trp_" && input_queue.front() != 'u')
+		throw std::runtime_error(prev + 'p');
 	    return prev + 'p';
 	}
 
 	std::string b_char(const std::string& prev)
 	{
-	    std::cerr << "scanner::b_char(\"" << prev << "\") [input_queue.front() = '" 
+	    std::cerr << name << ".b_char(\"" << prev << "\") [input_queue.front() = '" 
 		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "" && input_queue.front() != 'r')
 		throw std::runtime_error(prev + 'b');
@@ -279,16 +315,49 @@ class scanner
 
 	std::string h_char(const std::string& prev)
 	{
-	    std::cerr << "scanner::h_char(\"" << prev << "\") [input_queue.front() = '" 
+	    std::cerr << name << ".h_char(\"" << prev << "\") [input_queue.front() = '" 
 		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "" && input_queue.front() != 'a')
 		throw std::runtime_error(prev + 'h');
 	    return prev + 'h';
 	}
 
+	std::string g_char(const std::string& prev)
+	{
+	    std::cerr << name << ".g_char(\"" << prev << "\") [input_queue.front() = '" 
+		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
+	    if(prev == "trp_" && input_queue.front() != 'e')
+		throw std::runtime_error(prev + 'g');
+	    return prev + 'g';
+	}
+
+	std::string c_char(const std::string& prev)
+	{
+	    std::cerr << name << ".c_char(\"" << prev << "\") [input_queue.front() = '" 
+		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
+	    if(prev == "trp_get_" && std::isspace(input_queue.front())) {
+		output_queue.push(std::make_shared<trap_word>(traps::trp_get_c), 
+			"std::make_shared<trap_word>(traps::" + ttos(traps::trp_get_c) + ")");
+		return "";
+
+	    }
+	    return prev + 'c';
+	}
+
+	std::string u_char(const std::string& prev)
+	{
+	    std::cerr << name << ".u_char(\"" << prev << "\") [input_queue.front() = '" 
+		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
+	    if((prev == "trp_o" || prev == "trp_p") && input_queue.front() != 't')
+		throw std::runtime_error(prev + 'u');
+	    if((prev == "trp_in_" || prev == "trp_out_") && input_queue.front() != '1')
+		throw std::runtime_error(prev + 'u');
+	    return prev + 'u';
+	}
+
 	std::string num_char(const std::string& prev, char current)
 	{
-	    std::cerr << "scanner::num_char(\"" << prev << "\", '" << current 
+	    std::cerr << name << ".num_char(\"" << prev << "\", '" << current 
 		<< "') [input_queue.front() = '" << (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
 	    if(prev == "r" && std::isspace(input_queue.front()) && current != '8' && current != '9') {
 		output_queue.push(std::make_shared<register_word>(ntor(current)),
@@ -302,6 +371,38 @@ class scanner
 	    }
 	    if((prev == "" || isnumber(prev)) && !std::isdigit(input_queue.front()) && !std::isspace(input_queue.front()))
 		throw std::runtime_error(prev + current);
+	    if((prev == "trp_in_u" || prev == "trp_out_u") && (current != '1' || input_queue.front() != '6'))
+		throw std::runtime_error(prev + current);
+	    if(prev == "trp_in_u1" && current == '6' && std::isspace(input_queue.front())) {
+		output_queue.push(std::make_shared<trap_word>(traps::trp_in_u16),
+			std::string("std::make_shared<trap_word>(traps::") + ttos(traps::trp_in_u16) + ")");
+		return "";
+	    }
+	    if(prev == "trp_out_u1" && current == '6' && std::isspace(input_queue.front())) {
+		output_queue.push(std::make_shared<trap_word>(traps::trp_out_u16),
+			std::string("std::make_shared<trap_word>(traps::") + ttos(traps::trp_out_u16) + ")");
+		return "";
+	    }
 	    return prev + current;
+	}
+
+	std::string underscore_char(const std::string& prev)
+	{
+	    std::cerr << name << ".underscore_char(\"" << prev << "\") [input_queue.front() = '" 
+		<< (input_queue.front() == '\n' ? '\0' : input_queue.front()) << "']" << std::endl;
+	    if(prev == "trp" && input_queue.front() != 'g' &&
+				input_queue.front() != 'o' &&
+				input_queue.front() != 'p' &&
+				input_queue.front() != 'i')
+		throw std::runtime_error(prev + '_');
+	    if(prev == "trp_get" && input_queue.front() != 'c')
+		throw std::runtime_error(prev + '_');
+	    if(prev == "trp_in" && input_queue.front() != 'u')
+		throw std::runtime_error(prev + '_');
+	    if(prev == "trp_out" && input_queue.front() != 'u')
+		throw std::runtime_error(prev + '_');
+	    if(prev == "trp_put" && input_queue.front() != 's')
+		throw std::runtime_error(prev + '_');
+	    return prev + '_';
 	}
 };
