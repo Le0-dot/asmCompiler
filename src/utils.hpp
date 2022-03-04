@@ -60,3 +60,33 @@ struct typetostr { static constexpr auto v = ""; };
 
 template<>
 struct typetostr<uint16_t> { static constexpr auto v = "uint16_t"; };
+
+template<typename T>
+uint16_t num3(T val)
+{
+    return val & 0b111;
+}
+
+template<typename T>
+uint16_t num5(T val)
+{
+    return val & 0b11111;
+}
+
+template<typename T>
+uint16_t num6(T val)
+{
+    return val & 0b111111;
+}
+
+template<typename T>
+uint16_t num9(T val)
+{
+    return val & 0b111111111;
+}
+
+template<typename T>
+uint16_t num11(T val)
+{
+    return val & 0b11111111111;
+}
