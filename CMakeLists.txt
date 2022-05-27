@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22.2)
 
-project(asmComp)
+project(asmCompiler)
 
 set(EXECUTABLE_OUTPUT_PATH ./bin)
 
